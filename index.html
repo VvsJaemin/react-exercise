@@ -12,16 +12,22 @@
     ></script>
     <!-- jsx babel cdn -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <div id="root"></div>
+    <div id="root">
+      <!-- <h1>Hi</h1>
+      <h3>Bye</h3>
+      <h5>Children</h5> -->
+    </div>
     <script type="text/babel">
       const rootElement = document.getElementById("root");
 
-      const text = "Hello, world!";
-      const titleClassName = "title";
-      const props = { className: titleClassName, children: text };
-      // const custom1 = <h1 {...props} />;
-      const customH1 = <h1 {...props} />;
-      const element = customH1;
+      const element = (
+        <React.Fragment>
+          <h1>Hi</h1>
+          <h3>Bye</h3>
+          <h5>Children</h5>
+        </React.Fragment>
+      );
+      console.log(element);
       ReactDOM.render(element, rootElement);
     </script>
   </body>
