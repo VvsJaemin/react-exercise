@@ -13,26 +13,28 @@
     <!-- jsx babel cdn -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <div id="root"></div>
-    <script type="text/babel">
+    <!-- <script>
       const rootElement = document.getElementById("root");
-      function Number({ number, selected }) {
-        return selected ? <h1>{number}</h1> : <h3>{number}</h3>;
+      const random = () => {
+        const number = Math.floor(Math.random() * (10 - 1) + 1);
+        const element = `<button>${number}</button>`;
+        rootElement.innerHTML = element;
+      };
+
+      setInterval(random, 1000);
+    </script> -->
+    <script type="text/babel">
+      function tick() {
+        const element = (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {new Date().toLocaleTimeString()}.</h2>
+          </div>
+        );
+        ReactDOM.render(element, document.getElementById("root"));
       }
 
-      const element = (
-        <>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((number) => (
-            <Number
-              className="title"
-              key={number}
-              number={number}
-              selected={number === 3}
-            />
-          ))}
-        </>
-      );
-
-      ReactDOM.render(element, rootElement);
+      setInterval(tick, 1000);
     </script>
   </body>
 </html>
