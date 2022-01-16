@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      // useEffect는 render가 끝난 뒤 실행. 그 중에서도 child useEffect가 먼저 실행
+      // 상태가 update 될 경우 useEffect clean up이 먼저 그 다음 useEffect, 부모가 먼저 클린업하고 child가 클린업
+      // dependency Array == [text](useEffect에서)는 전달받은 값의 변화가 있는 경우에 해당 값만 useEffect 실행
+
+      const Child = () => {
+        console.log("   Child render start");
+        const [text, setText] = React.useState(() => {
+          console.log("   Child useState");
+          return "";
+        });
+
+        React.useEffect(() => {
+          console.log("   Child useEffect, no deps");
+
+          return () => {
+            console.log("Child useEffect [Cleanup], no deps");
+          };
+        });
+
+        React.useEffect(() => {
+          console.log("   Child useEffect, empty deps");
+
+          return () => {
+            console.log("   Child useEffect [Cleanup], empty deps");
+          };
+        }, []);
+
+        React.useEffect(() => {
+          console.log("   Child useEffect, [text] deps");
+
+          return () => {
+            console.log("   Child useEffect [Cleanup], [text] deps");
+          };
+        }, [text]);
+
+        function handleChange(event) {
+          setText(event.target.value);
+        }
+
+        const element = (
+          <>
+            <input onChange={handleChange} />
+            <p>{text} </p>
+          </>
+        );
+        console.log("   Child render end");
+        return element;
+      };
+
+      const App = () => {
+        console.log("APP render start");
+        // Lazy Initialize
+        const [show, setShow] = React.useState(() => {
+          console.log("App useState");
+          return false;
+        });
+
+        // useEffect는 처음 Render가 끝나고 실행 됨, 선언된 위치에 따라 호출 순서가 다름
+        // sideEffect라 모든 Render가 끝나고 useEffect가 실행 됨
+
+        // 그냥 무조건 실행
+        React.useEffect(() => {
+          console.log("App useEffect, no deps");
+
+          return () => {
+            console.log("App useEffect [Cleanup], no deps");
+          };
+        });
+
+        //상태가 비어 있을때만 실행
+        React.useEffect(() => {
+          console.log("App useEffect, empty deps");
+
+          return () => {
+            console.log("App useEffect [Cleanup], empty deps");
+          };
+        }, []);
+
+        // 처음 render 되고 show의 상태가 바뀔때만 실행
+        React.useEffect(() => {
+          console.log("App useEffect, [show]");
+
+          return () => {
+            console.log("App useEffect [Cleanup],  [show] deps");
+          };
+        }, [show]);
+
+        // useState에서 setState경우 prev이 주입되어 이전 상태의 값을 가져온다.
+        function handleClick() {
+          setShow((prev) => !prev);
+        }
+
+        console.log("APP render end");
+
+        return (
+          <>
+            <button onClick={handleClick}>Search</button>
+            {show ? <Child /> : null}
+          </>
+        );
+      };
+
+      ReactDOM.render(<App />, rootElement);
+    </script>
+  </body>
+</html>

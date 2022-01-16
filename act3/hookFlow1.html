@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      const App = () => {
+        console.log("APP render start");
+        // Lazy Initialize
+        const [show, setShow] = React.useState(() => {
+          console.log("App useState");
+          return false;
+        });
+
+        // useEffect는 처음 Render가 끝나고 실행 됨, 선언된 위치에 따라 호출 순서가 다름
+        // sideEffect라 모든 Render가 끝나고 useEffect가 실행 됨
+
+        // 그냥 무조건 실행
+        React.useEffect(() => {
+          console.log("App useEffect, no deps");
+        });
+
+        //상태가 비어 있을때만 실행
+        React.useEffect(() => {
+          console.log("App useEffect, empty deps");
+        }, []);
+
+        // 처음 render 되고 show의 상태가 바뀔때만 실행
+        React.useEffect(() => {
+          console.log("App useEffect, [show]");
+        }, [show]);
+
+        // useState에서 setState경우 prev이 주입되어 이전 상태의 값을 가져온다.
+        function handleClick() {
+          setShow((prev) => !prev);
+        }
+        console.log("APP render end");
+        return (
+          <>
+            <button onClick={handleClick}>Search</button>
+            {show ? (
+              <>
+                <input />
+                <p> </p>
+              </>
+            ) : null}
+          </>
+        );
+      };
+
+      ReactDOM.render(<App />, rootElement);
+    </script>
+  </body>
+</html>
